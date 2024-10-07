@@ -1,0 +1,40 @@
+services:
+  postgres:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d repo"]
+      interval: 1s
+      timeout: 3s
+      retries: 10
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: repo
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_socket:/var/run/postgresql
+    networks:
+      - internal
+  flat-manager:
+    image: ghcr.io/flatpak/flat-manager
+    depends_on:
+      postgres:
+       condition: service_healthy
+    environment:
+      REPO_CONFIG: /config.json
+    ports:
+      - "8080:8080"
+    volumes:
+      - flat_manager_home:/var/run/flat-manager
+      - postgres_socket:/var/run/postgresql
+      - ./config.json:/config.json
+      # gpg keys
+      - ./.gpg:/root/.gnupg
+    networks:
+      - internal
+volumes:
+  postgres_data:
+  flat_manager_home:
+  postgres_socket:
+networks:
+  internal:

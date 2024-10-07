@@ -1,0 +1,7 @@
+[Flatpak Ref]
+Name=exchange.haveno.Haveno
+Title=havenotwo
+Url=http://localhost:8080/repo/stable/
+RuntimeRepo=https://dl.flathub.org/repo/flathub.flatpakrepo
+IsRuntime=false
+GPGKey=!!TODO: REPLACE WITH B64 GPG KEY!!
